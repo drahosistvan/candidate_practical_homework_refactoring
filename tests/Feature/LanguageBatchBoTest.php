@@ -3,7 +3,6 @@ use Illuminate\Support\Collection;
 use Language\ApiCall;
 use Language\Config;
 use Language\LanguageBatchBo;
-use Language\Models\ApplicationLanguage;
 
 class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
 {
@@ -37,9 +36,9 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
         $this->delete_language_files();
         $this->language->generateLanguageFiles();
 
-        $this->phpFileList->each(function ($appFile) {
-            $this->assertFileExists($appFile->path);
-            $this->assertEquals($appFile->content, file_get_contents($appFile->path));
+        $this->phpFileList->each(function ($content,$path) {
+            $this->assertFileExists($path);
+            $this->assertEquals($content, file_get_contents($path));
         });
     }
 
@@ -49,23 +48,23 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
         $this->delete_xml_language_files();
         $this->language->generateAppletLanguageXmlFiles();
 
-        $this->xmlFileList->each(function ($appFile) {
-            $this->assertFileExists($appFile->path);
-            $this->assertEquals($appFile->content, file_get_contents($appFile->path));
+        $this->xmlFileList->each(function ($content,$path) {
+            $this->assertFileExists($path);
+            $this->assertEquals($content, file_get_contents($path));
         });
     }
 
     private function delete_language_files()
     {
-        $this->phpFileList->each(function ($applicationLanguageFile) {
-            @unlink($applicationLanguageFile->path);
+        $this->phpFileList->each(function ($content,$path) {
+            @unlink($path);
         });
     }
 
     private function delete_xml_language_files()
     {
-        $this->xmlFileList->each(function ($languageFile) {
-            @unlink($languageFile);
+        $this->xmlFileList->each(function ($content,$path) {
+            @unlink($path);
         });
     }
 
@@ -74,10 +73,7 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
         $fileList = [];
         foreach (Config::get('system.translated_applications') as $application => $languages) {
             foreach ($languages as $language) {
-                $fileList[] = new ApplicationLanguage(
-                    $this->get_php_language_file_path($application, $language),
-                    $this->get_php_language_file_content($language)
-                );
+                $fileList[$this->get_php_language_file_path($application, $language)] = $this->get_php_language_file_content($language);
             }
         }
 
@@ -117,10 +113,7 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
             ['applet' => 'JSM2_MemberApplet']
         );
         foreach ($languages['data'] as $language) {
-            $fileList[] = new ApplicationLanguage(
-                $this->get_xml_language_file_path($language),
-                $this->get_xml_language_file_content($language)
-            );
+            $fileList[$this->get_xml_language_file_path($language)] = $this->get_xml_language_file_content($language);
         }
 
         return new Collection($fileList);
@@ -147,5 +140,11 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
         );
 
         return $languageResponse['data'];
+    }
+
+    public function tearDown()
+    {
+        $this->delete_language_files();
+        $this->delete_xml_language_files();
     }
 }
