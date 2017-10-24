@@ -144,7 +144,7 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        $this->delete_language_files();
-        $this->delete_xml_language_files();
+        //$this->delete_language_files();
+        //$this->delete_xml_language_files();
     }
 }
