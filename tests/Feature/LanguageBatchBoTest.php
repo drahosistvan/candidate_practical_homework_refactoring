@@ -1,8 +1,8 @@
 <?php
+use Illuminate\Support\Collection;
 use Language\ApiCall;
 use Language\Config;
 use Language\LanguageBatchBo;
-use Illuminate\Support\Collection;
 use Language\Models\ApplicationLanguageFile;
 
 class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
@@ -49,7 +49,7 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
         $this->delete_xml_language_files();
         $this->language->generateAppletLanguageXmlFiles();
 
-        $this->xmlFileList->each(function($appFile){
+        $this->xmlFileList->each(function ($appFile) {
             $this->assertFileExists($appFile->path);
             $this->assertEquals($appFile->content, file_get_contents($appFile->path));
         });
@@ -80,23 +80,27 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
                 );
             }
         }
+
         return new Collection($fileList);
     }
 
-    private function get_php_language_file_path($application, $language) {
+    private function get_php_language_file_path($application, $language)
+    {
         return Config::get('system.paths.root') . "/cache/{$application}/{$language}.php";
     }
 
-    private function get_php_language_file_content($language) {
+    private function get_php_language_file_content($language)
+    {
         $languageResponse = ApiCall::call(
             'system_api',
             'language_api',
-            array(
+            [
                 'system' => 'LanguageFiles',
-                'action' => 'getLanguageFile'
-            ),
-            array('language' => $language)
+                'action' => 'getLanguageFile',
+            ],
+            ['language' => $language]
         );
+
         return $languageResponse['data'];
     }
 
@@ -122,25 +126,26 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
         return new Collection($fileList);
     }
 
-    private function get_xml_language_file_path($language) {
+    private function get_xml_language_file_path($language)
+    {
         return Config::get('system.paths.root') . '/cache/flash/lang_' . $language . '.xml';
     }
 
-    private function get_xml_language_file_content($language) {
+    private function get_xml_language_file_content($language)
+    {
         $languageResponse = ApiCall::call(
             'system_api',
             'language_api',
-            array(
+            [
                 'system' => 'LanguageFiles',
-                'action' => 'getAppletLanguageFile'
-            ),
-            array(
-                'applet' => 'JSM2_MemberApplet',
-                'language' => $language
-            )
+                'action' => 'getAppletLanguageFile',
+            ],
+            [
+                'applet'   => 'JSM2_MemberApplet',
+                'language' => $language,
+            ]
         );
+
         return $languageResponse['data'];
     }
-
-
 }
