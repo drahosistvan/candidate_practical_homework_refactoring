@@ -2,12 +2,13 @@
 
 namespace Language\Cache;
 
-use Language\Models\ApplicationLanguage;
+use Language\Model\ApplicationLanguage;
+use Language\Contracts\Cacher;
 
 class LanguageCache
 {
-    public static function set(ApplicationLanguage $language)
+    public function create(ApplicationLanguage $language, Cacher $cacher)
     {
-        file_put_contents($language->path,$language->content);
+        $cacher->set($language);
     }
 }

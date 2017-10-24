@@ -9,7 +9,7 @@ use Language\Exceptions\Api\WrongApiResponseException;
 
 class LanguageApi
 {
-    public static function get($data)
+    public function get($data)
     {
         list($target, $mode, $getParameters, $postParameters) = $data;
         $response = ApiCall::call($target, $mode, $getParameters, $postParameters);
@@ -17,7 +17,7 @@ class LanguageApi
         return self::transformResponse($response);
     }
 
-    public static function getLanguageFile($language)
+    public function getLanguageFile($language)
     {
         $data = [
             'system_api',
@@ -31,10 +31,10 @@ class LanguageApi
             ],
         ];
 
-        return self::get($data);
+        return $this->get($data);
     }
 
-    public static function getAppletLanguageFile($applet, $language)
+    public function getAppletLanguageFile($applet, $language)
     {
         $data = [
             'system_api',
@@ -49,10 +49,10 @@ class LanguageApi
             ],
         ];
 
-        return self::get($data);
+        return $this->get($data);
     }
 
-    public static function getAppletLanguages($applet)
+    public function getAppletLanguages($applet)
     {
         $data = [
             'system_api',
@@ -64,17 +64,17 @@ class LanguageApi
             ['applet' => $applet],
         ];
 
-        return self::get($data);
+        return $this->get($data);
     }
 
-    private static function transformResponse($response)
+    private function transformResponse($response)
     {
-        self::checkResponse($response);
+        $this->checkResponse($response);
 
         return $response['data'];
     }
 
-    private static function checkResponse($response)
+    private function checkResponse($response)
     {
         if ($response === false || !isset($response['status'])) {
             throw new ApiErrorExcepiton('Error during the api call');
