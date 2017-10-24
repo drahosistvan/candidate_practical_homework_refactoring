@@ -1,6 +1,6 @@
 <?php
 
-namespace Language\Cache;
+namespace Language\Services\Cache;
 
 use Language\Model\ApplicationLanguage;
 use Language\Contracts\Cacher;

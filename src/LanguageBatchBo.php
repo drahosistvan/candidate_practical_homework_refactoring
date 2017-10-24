@@ -2,9 +2,9 @@
 
 namespace Language;
 
-use Language\Api\LanguageApi;
-use Language\Cache\FileCacher;
-use Language\Cache\LanguageCache;
+use Language\Services\Api\LanguageApi;
+use Language\Services\Cache\FileCacher;
+use Language\Services\Cache\LanguageCache;
 use Language\Model\ApplicationLanguage;
 
 class LanguageBatchBo

@@ -1,6 +1,6 @@
 <?php
 
-namespace Language\Api;
+namespace Language\Services\Api;
 
 use Language\ApiCall;
 use Language\Exceptions\Api\ApiErrorExcepiton;
