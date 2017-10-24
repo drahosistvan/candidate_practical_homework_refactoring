@@ -4,7 +4,7 @@ use Language\ApiCall;
 use Language\Config;
 use Language\LanguageBatchBo;
 
-class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
+class RefactorChangeTest extends PHPUnit_Framework_TestCase
 {
     private $language;
     private $xmlFileList;
@@ -144,7 +144,7 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        //$this->delete_language_files();
-        //$this->delete_xml_language_files();
+        $this->delete_language_files();
+        $this->delete_xml_language_files();
     }
 }
