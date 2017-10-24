@@ -2,21 +2,19 @@
 
 namespace Language;
 
+use Language\Contracts\CacheDriver;
 use Language\Services\Api\LanguageApi;
 use Language\Services\Cache\FileCache;
-use Language\Services\Cache\LanguageCache;
 use Language\Model\ApplicationLanguage;
 
 class LanguageBatchBo
 {
     private $cacheDriver;
-    private $languageCache;
     private $languageApi;
 
-    public function __construct(LanguageCache $languageCache = null, LanguageApi $languageApi = null)
+    public function __construct(CacheDriver $cacheDriver = null, LanguageApi $languageApi = null)
     {
-        $this->cacheDriver = new FileCache();
-        $this->languageCache = $languageCache ?: new LanguageCache();
+        $this->cacheDriver = $cacheDriver ?: new FileCache();
         $this->languageApi = $languageApi ?: new LanguageApi();
     }
 
@@ -30,7 +28,7 @@ class LanguageBatchBo
                     $language,
                     $this->languageApi->getLanguageFile($language)
                 );
-                $this->languageCache->create($languageApplication, $this->cacheDriver);
+                $this->cacheDriver->set($languageApplication);
             }
         }
     }
@@ -50,7 +48,7 @@ class LanguageBatchBo
                     $language,
                     $this->languageApi->getAppletLanguageFile($appletLanguageId, $language)
                 );
-                $this->languageCache->create($languageApplication, $this->cacheDriver);
+                $this->cacheDriver->set($languageApplication);
             }
         }
     }
