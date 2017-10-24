@@ -7,7 +7,7 @@ use Language\Exceptions\CacheCreationException;
 use Language\Model\ApplicationLanguage;
 use Language\Config;
 
-class FileCacher implements CacheDriver
+class FileCache implements CacheDriver
 {
     public function set(ApplicationLanguage $language)
     {

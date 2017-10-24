@@ -3,7 +3,7 @@
 namespace Language;
 
 use Language\Services\Api\LanguageApi;
-use Language\Services\Cache\FileCacher;
+use Language\Services\Cache\FileCache;
 use Language\Services\Cache\LanguageCache;
 use Language\Model\ApplicationLanguage;
 
@@ -15,7 +15,7 @@ class LanguageBatchBo
 
     public function __construct(LanguageCache $languageCache = null, LanguageApi $languageApi = null)
     {
-        $this->cacheDriver = new FileCacher();
+        $this->cacheDriver = new FileCache();
         $this->languageCache = $languageCache ?: new LanguageCache();
         $this->languageApi = $languageApi ?: new LanguageApi();
     }
