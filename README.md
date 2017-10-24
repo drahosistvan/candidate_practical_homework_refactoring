@@ -1,4 +1,4 @@
-# Due Date Calculator
+# LanguageBatchBo
 
 ## Install
 Requires Composer, Git and PHP installed globally!
