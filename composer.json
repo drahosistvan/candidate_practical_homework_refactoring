@@ -3,7 +3,8 @@
     "description": "2015 Q3 Senior",
     "require": {
         "phpunit/phpunit": "5.7.*",
-        "tightenco/collect": "5.4.*"
+        "tightenco/collect": "5.4.*",
+        "monolog/monolog": "^1.23"
     },
     "autoload": {
         "psr-4": {"Language\\": "src/"}

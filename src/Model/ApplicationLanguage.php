@@ -3,6 +3,7 @@
 namespace Language\Model;
 
 use Language\Contracts\Cacheable;
+use Language\Contracts\CacheDriver;
 
 class ApplicationLanguage implements Cacheable
 {
@@ -27,5 +28,10 @@ class ApplicationLanguage implements Cacheable
     public function getCacheContent()
     {
         return $this->content;
+    }
+
+    public function cache(CacheDriver $cacheDriver)
+    {
+        $cacheDriver->set($this);
     }
 }
