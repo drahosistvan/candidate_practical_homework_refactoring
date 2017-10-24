@@ -3,11 +3,11 @@
 namespace Language\Services\Cache;
 
 use Language\Model\ApplicationLanguage;
-use Language\Contracts\Cacher;
+use Language\Contracts\CacheDriver;
 
 class LanguageCache
 {
-    public function create(ApplicationLanguage $language, Cacher $cacher)
+    public function create(ApplicationLanguage $language, CacheDriver $cacher)
     {
         $cacher->set($language);
     }

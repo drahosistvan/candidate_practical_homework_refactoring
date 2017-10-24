@@ -3,7 +3,7 @@
 namespace Language\Contracts;
 
 use Language\Model\ApplicationLanguage;
-interface Cacher
+interface CacheDriver
 {
     public function set(ApplicationLanguage $language);
 }

@@ -2,12 +2,12 @@
 
 namespace Language\Services\Cache;
 
-use Language\Contracts\Cacher;
+use Language\Contracts\CacheDriver;
 use Language\Exceptions\CacheCreationException;
 use Language\Model\ApplicationLanguage;
 use Language\Config;
 
-class FileCacher implements Cacher
+class FileCacher implements CacheDriver
 {
     public function set(ApplicationLanguage $language)
     {
