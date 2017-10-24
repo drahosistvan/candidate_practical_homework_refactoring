@@ -2,7 +2,7 @@
 
 namespace Language\Models;
 
-class ApplicationLanguageFile
+class ApplicationLanguage
 {
     public $path;
     public $content;

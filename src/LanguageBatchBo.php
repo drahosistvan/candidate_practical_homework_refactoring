@@ -2,6 +2,7 @@
 
 namespace Language;
 
+use Language\Api\LanguageApi;
 /**
  * Business logic related to generating language files.
  */
@@ -120,7 +121,7 @@ class LanguageBatchBo
             }
             $path = Config::get('system.paths.root') . '/cache/flash';
             foreach ($languages as $language) {
-                $xmlContent = self::getAppletLanguageFile($appletLanguageId, $language);
+                $xmlContent = LanguageApi::getAppletLanguageFile($appletLanguageId, $language);
                 $xmlFile = $path . '/lang_' . $language . '.xml';
                 if (strlen($xmlContent) == file_put_contents($xmlFile, $xmlContent)) {
                     echo " OK saving $xmlFile was successful.\n";
@@ -160,42 +161,6 @@ class LanguageBatchBo
             self::checkForApiErrorResult($result);
         } catch (\Exception $e) {
             throw new \Exception('Getting languages for applet (' . $applet . ') was unsuccessful ' . $e->getMessage());
-        }
-
-        return $result['data'];
-    }
-
-
-    /**
-     * Gets a language xml for an applet.
-     *
-     * @param string $applet The identifier of the applet.
-     * @param string $language The language identifier.
-     *
-     * @throws \Exception   If there was an error.
-     *
-     * @return string|false   The content of the language file or false if weren't able to get it.
-     */
-    protected static function getAppletLanguageFile($applet, $language)
-    {
-        $result = ApiCall::call(
-            'system_api',
-            'language_api',
-            array(
-                'system' => 'LanguageFiles',
-                'action' => 'getAppletLanguageFile'
-            ),
-            array(
-                'applet' => $applet,
-                'language' => $language
-            )
-        );
-
-        try {
-            self::checkForApiErrorResult($result);
-        } catch (\Exception $e) {
-            throw new \Exception('Getting language xml for applet: (' . $applet . ') on language: (' . $language . ') was unsuccessful: '
-                . $e->getMessage());
         }
 
         return $result['data'];

@@ -3,7 +3,7 @@ use Illuminate\Support\Collection;
 use Language\ApiCall;
 use Language\Config;
 use Language\LanguageBatchBo;
-use Language\Models\ApplicationLanguageFile;
+use Language\Models\ApplicationLanguage;
 
 class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
 {
@@ -74,7 +74,7 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
         $fileList = [];
         foreach (Config::get('system.translated_applications') as $application => $languages) {
             foreach ($languages as $language) {
-                $fileList[] = new ApplicationLanguageFile(
+                $fileList[] = new ApplicationLanguage(
                     $this->get_php_language_file_path($application, $language),
                     $this->get_php_language_file_content($language)
                 );
@@ -117,7 +117,7 @@ class LanguageBatchBoTest extends PHPUnit_Framework_TestCase
             ['applet' => 'JSM2_MemberApplet']
         );
         foreach ($languages['data'] as $language) {
-            $fileList[] = new ApplicationLanguageFile(
+            $fileList[] = new ApplicationLanguage(
                 $this->get_xml_language_file_path($language),
                 $this->get_xml_language_file_content($language)
             );
