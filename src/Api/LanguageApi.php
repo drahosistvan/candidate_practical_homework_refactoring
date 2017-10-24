@@ -17,6 +17,23 @@ class LanguageApi
         return self::transformResponse($response);
     }
 
+    public static function getLanguageFile($language)
+    {
+        $data = [
+            'system_api',
+            'language_api',
+            [
+                'system' => 'LanguageFiles',
+                'action' => 'getLanguageFile',
+            ],
+            [
+                'language' => $language
+            ],
+        ];
+
+        return self::get($data);
+    }
+
     public static function getAppletLanguageFile($applet, $language)
     {
         $data = [
@@ -31,12 +48,29 @@ class LanguageApi
                 'language' => $language,
             ],
         ];
+
+        return self::get($data);
+    }
+
+    public static function getAppletLanguages($applet)
+    {
+        $data = [
+            'system_api',
+            'language_api',
+            [
+                'system' => 'LanguageFiles',
+                'action' => 'getAppletLanguages',
+            ],
+            ['applet' => $applet],
+        ];
+
         return self::get($data);
     }
 
     private static function transformResponse($response)
     {
         self::checkResponse($response);
+
         return $response['data'];
     }
 
