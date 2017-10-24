@@ -1,10 +1,24 @@
-#Task:
+# Due Date Calculator
+
+## Install
+Requires Composer, Git and PHP installed globally!
+1. Clone the repository `git clone https://developer.isti.cloud/drahos.istvan/candidate_practical_homework_refactoring.git`
+2. Install composer dependencies `composer install`
+3. Run tests or Run the application
+
+## Application run
+`php ./src/generate_language_files.php`
+
+## Tests run
+`./vendor/bin/phpunit`
+
+## Task:
 Refactor the LanguageBatchBo!
 The goals are:
 * increase the inner quality of the code and
 * (optional) increase test coverage with unit tests
 
-#Rules:
+## Rules:
 * Create local git repo for the project
 * Commit after every step when the system is in working condition
 * The interface of the LanguageBatchBo can't be changed (the generate_language_files.php should remain the same), but (of course) it's content can change and can split into new classes.
