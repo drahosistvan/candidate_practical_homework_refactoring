@@ -1,13 +1,17 @@
 <?php
 
-use Language\Services\Api\LanguageApi;
+namespace LanguageTest\Unit;
+
 use Language\Exceptions\Api\ApiErrorExcepiton;
+use Language\Services\Api\LanguageApi;
+use PHPUnit_Framework_TestCase;
 
 class LanguageApiTest extends PHPUnit_Framework_TestCase
 {
     private $api;
 
-    public function setUp(){
+    public function setUp()
+    {
         $this->api = new LanguageApi();
     }
 
@@ -23,7 +27,7 @@ class LanguageApiTest extends PHPUnit_Framework_TestCase
                 'action' => 'invalidAction',
             ],
             [
-                'language' => 'hu'
+                'language' => 'hu',
             ],
         ];
         $this->api->get($data);
@@ -40,7 +44,7 @@ class LanguageApiTest extends PHPUnit_Framework_TestCase
                 'action' => 'getAppletLanguages',
             ],
             [
-                'language' => 'hu'
+                'language' => 'hu',
             ],
         ];
         $this->assertNotEmpty($this->api->get($data));
