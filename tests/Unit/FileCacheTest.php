@@ -2,7 +2,7 @@
 
 namespace LanguageTest\Unit;
 
-use Language\Exceptions\CacheCreationException;
+use Language\Exceptions\InvalidApplicationTypeException;
 use Language\Model\ApplicationLanguage;
 use Language\Services\Cache\FileCache;
 use PHPUnit_Framework_TestCase;
@@ -20,8 +20,10 @@ class FileCacheTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_cannot_generate_filename_for_unknown_application_type()
     {
-        $this->expectException(CacheCreationException::class);
-        $this->fileCache->set(new ApplicationLanguage('a','a','c','d'));
+        $this->expectException(InvalidApplicationTypeException::class);
+        $apiMock = $this->getMockBuilder(ApplicationLanguage::class)
+            ->setConstructorArgs(['a','b','c','d'])->getMock();
 
+        $this->fileCache->set($apiMock);
     }
 }

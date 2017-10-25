@@ -16,9 +16,9 @@ class ApplicationLanguage implements Cacheable
     public function __construct($application, $type, $language, $content)
     {
         $this->application = $application;
-        $this->type = $type;
         $this->language = $language;
 
+        $this->type = $this->setType($type);
         $this->setContent($content);
     }
 
@@ -46,5 +46,9 @@ class ApplicationLanguage implements Cacheable
         $this->content = $content;
 
         return true;
+    }
+
+    public function setType($type) {
+        return (new ApplicationType())->getType($type);
     }
 }

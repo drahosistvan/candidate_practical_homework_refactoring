@@ -6,13 +6,20 @@ use Language\ApiCall;
 use Language\Exceptions\Api\ApiErrorExcepiton;
 use Language\Exceptions\Api\WrongApiContentException;
 use Language\Exceptions\Api\WrongApiResponseException;
+use Language\Contracts\CallableApi;
 
 class LanguageApi
 {
+    private $externalApi;
+
+    public function __construct(CallableApi $externalApi = null)
+    {
+        $this->externalApi = $externalApi;
+    }
+
     public function get($data)
     {
-        list($target, $mode, $getParameters, $postParameters) = $data;
-        $response = ApiCall::call($target, $mode, $getParameters, $postParameters);
+        $response = $this->callExternalApi($data);
 
         return self::transformResponse($response);
     }
@@ -67,6 +74,17 @@ class LanguageApi
         return $this->get($data);
     }
 
+    private function callExternalApi($params) {
+        list($target, $mode, $getParameters, $postParameters) = $params;
+
+        if ($this->externalApi) {
+            return $this->externalApi->call($target, $mode, $getParameters, $postParameters);
+        }
+
+        return ApiCall::call($target, $mode, $getParameters, $postParameters);
+
+    }
+
     private function transformResponse($response)
     {
         $this->checkResponse($response);
@@ -84,10 +102,10 @@ class LanguageApi
             throw new WrongApiResponseException('Wrong response: '
                 . (!empty($result['error_type']) ? 'Type(' . $result['error_type'] . ') ' : '')
                 . (!empty($result['error_code']) ? 'Code(' . $result['error_code'] . ') ' : '')
-                . ((string)$result['data']));
+                . (!empty($result['data']) ? (string)$result['data'] : ''));
         }
 
-        if ($response['data'] === false) {
+        if (!isset($response['data'])) {
             throw new WrongApiContentException('Wrong content!');
         }
     }

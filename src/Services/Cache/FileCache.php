@@ -5,6 +5,7 @@ namespace Language\Services\Cache;
 use Language\Config;
 use Language\Contracts\CacheDriver;
 use Language\Exceptions\CacheCreationException;
+use Language\Exceptions\InvalidApplicationTypeException;
 use Language\Model\ApplicationLanguage;
 use Language\Model\ApplicationType;
 use Psr\Log\LoggerInterface;
@@ -71,7 +72,7 @@ class FileCache implements CacheDriver
                 break;
             default:
                 $this->logger->error('Unexpected application type: ' . $language->type);
-                throw new CacheCreationException('Unexpected application type: ' . $language->type);
+                throw new InvalidApplicationTypeException('Unexpected application type: ' . $language->type);
         }
     }
 }
