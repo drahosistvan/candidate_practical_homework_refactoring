@@ -3,6 +3,7 @@
 namespace LanguageTest\Unit;
 
 use Language\Contracts\Cacheable;
+use Language\Exceptions\InvalidApplicationTypeException;
 use Language\Exceptions\InvalidContentException;
 use Language\Model\ApplicationLanguage;
 use PHPUnit_Framework_TestCase;
@@ -35,4 +36,13 @@ class ApplicationLanguageTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals('standard.a.c', $this->applicationLanguage->getCacheKey());
     }
+
+    /** @test */
+    public function application_type_cannot_be_unknown()
+    {
+        $this->expectException(InvalidApplicationTypeException::class);
+        new ApplicationLanguage('a','b','c','d');
+    }
+
+
 }
