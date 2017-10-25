@@ -2,10 +2,11 @@
 
 namespace Language\Services\Cache;
 
+use Language\Config;
 use Language\Contracts\CacheDriver;
 use Language\Exceptions\CacheCreationException;
 use Language\Model\ApplicationLanguage;
-use Language\Config;
+use Language\Model\ApplicationType;
 use Psr\Log\LoggerInterface;
 
 class FileCache implements CacheDriver
@@ -13,6 +14,7 @@ class FileCache implements CacheDriver
     private $logger;
     private $folder;
     private $filename;
+    private $content;
 
     public function __construct(LoggerInterface $logger)
     {
@@ -21,46 +23,55 @@ class FileCache implements CacheDriver
 
     public function set(ApplicationLanguage $language)
     {
-        $this->folder = $this->getPathForApplicationLanguage($language);
-        $this->filename = $this->getFilenameForApplicationLanguage($language);
-        if (!is_dir($this->folder)) {
-            mkdir($this->folder);
-        }
-        if (file_put_contents($this->folder.$this->filename, $language->getCacheContent()) === false) {
-            $this->logger->error('Cannot write to file', ['path' => $this->folder.$this->filename]);
-            throw new CacheCreationException('Cannot write the file');
-        }
+        $this->content = $language->getCacheContent();
 
-        $this->logger->info('Language file created successfully', ['path' => $this->folder.$this->filename]);
+        $this->setPathVariables($language)
+            ->setFolder()
+            ->saveContentToFile();
+
         return true;
     }
 
-    protected function getPathForApplicationLanguage(ApplicationLanguage $language) {
-        switch ($language->type) {
-            case 'applet':
-                return Config::get('system.paths.root') . '/cache/flash/';
-                break;
-            case 'standard':
-                return Config::get('system.paths.root') . '/cache/'.$language->application . '/';
-                break;
-            default:
-                throw new CacheCreationException('Cannot define path for '.$language->type.' application type');
-                return;
+    protected function setFolder()
+    {
+        if (!is_dir($this->folder)) {
+            mkdir($this->folder);
+            $this->logger->info('Creating folder', ['folder' => $this->folder]);
         }
+
+        return $this;
     }
 
-    protected function getFilenameForApplicationLanguage(ApplicationLanguage $language) {
-        switch ($language->type) {
-            case 'applet':
-                return 'lang_' . $language->language . '.xml';
-                break;
-            case 'standard':
-                return $language->language . '.php';
-                break;
-            default:
-                throw new CacheCreationException('Cannot define filename for '.$language->type.' application type');
-                return;
+    protected function saveContentToFile()
+    {
+        if (file_put_contents($this->folder . $this->filename, $this->content) === false) {
+            $this->logger->error('Cannot write to file', ['path' => $this->folder . $this->filename]);
+            throw new CacheCreationException('Cannot write the file');
         }
+
+        $this->logger->info('Language file created successfully', ['path' => $this->folder . $this->filename]);
+
+        return $this;
     }
 
+    protected function setPathVariables(ApplicationLanguage $language)
+    {
+        switch ($language->type) {
+            case ApplicationType::APPLET:
+                $this->folder = Config::get('system.paths.root') . '/cache/flash/';
+                $this->filename = 'lang_' . $language->language . '.xml';
+
+                return $this;
+                break;
+            case ApplicationType::STANDARD:
+                $this->folder = Config::get('system.paths.root') . '/cache/' . $language->application . '/';
+                $this->filename = $language->language . '.php';
+
+                return $this;
+                break;
+            default:
+                $this->logger->error('Unexpected application type: ' . $language->type);
+                throw new CacheCreationException('Unexpected application type: ' . $language->type);
+        }
+    }
 }
