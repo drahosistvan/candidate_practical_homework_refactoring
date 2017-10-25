@@ -36,7 +36,7 @@ class FileCache implements CacheDriver
     protected function setFolder()
     {
         if (!is_dir($this->folder)) {
-            mkdir($this->folder);
+            mkdir($this->folder, 0777, true);
             $this->logger->info('Creating folder', ['folder' => $this->folder]);
         }
 
@@ -59,13 +59,13 @@ class FileCache implements CacheDriver
     {
         switch ($language->type) {
             case ApplicationType::APPLET:
-                $this->folder = Config::get('system.paths.root') . '/cache/flash/';
+                $this->folder = $this->getCacheFolder() . 'flash/';
                 $this->filename = 'lang_' . $language->language . '.xml';
 
                 return $this;
                 break;
             case ApplicationType::STANDARD:
-                $this->folder = Config::get('system.paths.root') . '/cache/' . $language->application . '/';
+                $this->folder = $this->getCacheFolder() . $language->application . '/';
                 $this->filename = $language->language . '.php';
 
                 return $this;
@@ -74,5 +74,10 @@ class FileCache implements CacheDriver
                 $this->logger->error('Unexpected application type: ' . $language->type);
                 throw new InvalidApplicationTypeException('Unexpected application type: ' . $language->type);
         }
+    }
+
+    protected function getCacheFolder()
+    {
+        return Config::get('system.paths.root') . '/cache/';
     }
 }

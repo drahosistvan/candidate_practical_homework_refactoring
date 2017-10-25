@@ -7,6 +7,7 @@ use Language\Model\ApplicationLanguage;
 use Language\Services\Cache\FileCache;
 use PHPUnit_Framework_TestCase;
 use Psr\Log\LoggerInterface;
+use Language\Config;
 
 class FileCacheTest extends PHPUnit_Framework_TestCase
 {
@@ -15,6 +16,7 @@ class FileCacheTest extends PHPUnit_Framework_TestCase
     public function setUp(){
         $logger = $this->createMock(LoggerInterface::class);
         $this->fileCache = new FileCache($logger);
+        $this->delete_cache_folder(Config::get('system.paths.root').'/cache');
     }
 
     /** @test */
@@ -25,5 +27,23 @@ class FileCacheTest extends PHPUnit_Framework_TestCase
             ->setConstructorArgs(['a','b','c','d'])->getMock();
 
         $this->fileCache->set($apiMock);
+    }
+
+    private function delete_cache_folder($dir)
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (filetype($dir."/".$object) == "dir"){
+                        $this->delete_cache_folder($dir."/".$object);
+                    }else{
+                        $this->delete_cache_folder($dir."/".$object);
+                    }
+                }
+            }
+            reset($objects);
+            rmdir($dir);
+        }
     }
 }
