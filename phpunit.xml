@@ -19,10 +19,9 @@
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
-            <exclude>
-                <directory>./vendor</directory>
-            </exclude>
+            <directory suffix=".php">./src/Model</directory>
+            <directory suffix=".php">./src/Services</directory>
+            <file>./src/LanguageBatchBo.php</file>
         </whitelist>
     </filter>
 </phpunit>
