@@ -44,6 +44,7 @@ class FileCache implements CacheDriver
                 return Config::get('system.paths.root') . '/cache/'.$language->application . '/';
                 break;
             default:
+                throw new CacheCreationException('Cannot define path for '.$language->type.' application type');
                 return;
         }
     }
@@ -57,6 +58,7 @@ class FileCache implements CacheDriver
                 return $language->language . '.php';
                 break;
             default:
+                throw new CacheCreationException('Cannot define filename for '.$language->type.' application type');
                 return;
         }
     }
