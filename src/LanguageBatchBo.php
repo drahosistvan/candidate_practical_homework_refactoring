@@ -23,12 +23,13 @@ class LanguageBatchBo
         $this->logger = $logger ?: $this->setupDefaultLogger();
         $this->cacheDriver = $cacheDriver ?: new FileCache($this->logger);
         $this->applicationLanguageCollection = $applicationLanguageCollection ?: new ApplicationLanguageCollection();
-
     }
 
     public function generateLanguageFiles()
     {
-        $this->applicationLanguageCollection->getApplicationLanguages()->each->cache($this->cacheDriver);
+        $this->applicationLanguageCollection->getApplicationLanguages()->each(function($applicationLanguage){
+            $this->cacheDriver->set($applicationLanguage);
+        });
     }
 
     public function generateAppletLanguageXmlFiles()
