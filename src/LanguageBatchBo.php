@@ -3,10 +3,11 @@
 namespace Language;
 
 use Language\Contracts\CacheDriver;
-use Language\Services\Cache\FileCache;
-use Language\Services\Data\ApplicationLanguageCollection;
+use Language\Exceptions\InvalidApplicationTypeException;
 use Language\Model\ApplicationLanguage;
 use Language\Model\ApplicationType;
+use Language\Services\Cache\FileCache;
+use Language\Services\Data\ApplicationLanguageCollection;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -18,8 +19,8 @@ class LanguageBatchBo
     private $logger;
 
     public function __construct(
-        CacheDriver $cacheDriver = null,
         ApplicationLanguageCollection $applicationLanguageCollection = null,
+        CacheDriver $cacheDriver = null,
         LoggerInterface $logger = null
     ) {
         $this->logger = $logger ?: $this->setupDefaultLogger();
@@ -29,14 +30,14 @@ class LanguageBatchBo
 
     public function generateLanguageFiles()
     {
-        $this->applicationLanguageCollection->getApplicationLanguages()->each(function($applicationLanguage){
+        $this->applicationLanguageCollection->getApplicationLanguages()->each(function ($applicationLanguage) {
             $this->cacheDriver->configure($this->getCacheConfig($applicationLanguage))->set($applicationLanguage->getContent());
         });
     }
 
     public function generateAppletLanguageXmlFiles()
     {
-        $this->applicationLanguageCollection->getAppletLanguages()->each(function($applicationLanguage){
+        $this->applicationLanguageCollection->getAppletLanguages()->each(function ($applicationLanguage) {
             $this->cacheDriver->configure($this->getCacheConfig($applicationLanguage))->set($applicationLanguage->getContent());
         });
     }
@@ -51,13 +52,13 @@ class LanguageBatchBo
         switch ($language->type) {
             case ApplicationType::APPLET:
                 return [
-                    'folder' => $this->getCacheFolder().'flash/',
+                    'folder'   => $this->getCacheFolder() . 'flash/',
                     'filename' => 'lang_' . $language->language . '.xml',
                 ];
                 break;
             case ApplicationType::STANDARD:
                 return [
-                    'folder' => $this->getCacheFolder().$language->application . '/',
+                    'folder'   => $this->getCacheFolder() . $language->application . '/',
                     'filename' => $language->language . '.php',
                 ];
                 break;

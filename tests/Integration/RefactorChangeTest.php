@@ -1,8 +1,12 @@
 <?php
+
+namespace Language\Test\Integration;
+
 use Illuminate\Support\Collection;
 use Language\ApiCall;
 use Language\Config;
 use Language\LanguageBatchBo;
+use PHPUnit_Framework_TestCase;
 
 class RefactorChangeTest extends PHPUnit_Framework_TestCase
 {
@@ -36,7 +40,7 @@ class RefactorChangeTest extends PHPUnit_Framework_TestCase
         $this->delete_language_files();
         $this->language->generateLanguageFiles();
 
-        $this->phpFileList->each(function ($content,$path) {
+        $this->phpFileList->each(function ($content, $path) {
             $this->assertFileExists($path);
             $this->assertEquals($content, file_get_contents($path));
         });
@@ -48,7 +52,7 @@ class RefactorChangeTest extends PHPUnit_Framework_TestCase
         $this->delete_xml_language_files();
         $this->language->generateAppletLanguageXmlFiles();
 
-        $this->xmlFileList->each(function ($content,$path) {
+        $this->xmlFileList->each(function ($content, $path) {
             $this->assertFileExists($path);
             $this->assertEquals($content, file_get_contents($path));
         });
@@ -56,14 +60,14 @@ class RefactorChangeTest extends PHPUnit_Framework_TestCase
 
     private function delete_language_files()
     {
-        $this->phpFileList->each(function ($content,$path) {
+        $this->phpFileList->each(function ($content, $path) {
             @unlink($path);
         });
     }
 
     private function delete_xml_language_files()
     {
-        $this->xmlFileList->each(function ($content,$path) {
+        $this->xmlFileList->each(function ($content, $path) {
             @unlink($path);
         });
     }
@@ -73,7 +77,8 @@ class RefactorChangeTest extends PHPUnit_Framework_TestCase
         $fileList = [];
         foreach (Config::get('system.translated_applications') as $application => $languages) {
             foreach ($languages as $language) {
-                $fileList[$this->get_php_language_file_path($application, $language)] = $this->get_php_language_file_content($language);
+                $fileList[ $this->get_php_language_file_path($application,
+                    $language) ] = $this->get_php_language_file_content($language);
             }
         }
 
@@ -113,7 +118,7 @@ class RefactorChangeTest extends PHPUnit_Framework_TestCase
             ['applet' => 'JSM2_MemberApplet']
         );
         foreach ($languages['data'] as $language) {
-            $fileList[$this->get_xml_language_file_path($language)] = $this->get_xml_language_file_content($language);
+            $fileList[ $this->get_xml_language_file_path($language) ] = $this->get_xml_language_file_content($language);
         }
 
         return new Collection($fileList);

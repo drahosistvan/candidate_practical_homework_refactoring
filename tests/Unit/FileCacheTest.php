@@ -1,6 +1,6 @@
 <?php
 
-namespace LanguageTest\Unit;
+namespace Language\Test\Unit;
 
 use Language\Exceptions\CacheCreationException;
 use Language\Exceptions\InvalidDirectoryException;

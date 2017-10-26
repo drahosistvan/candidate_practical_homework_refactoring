@@ -1,6 +1,6 @@
 <?php
 
-namespace LanguageTest\Unit;
+namespace Language\Test\Unit;
 
 use Language\Contracts\CallableApi;
 use Language\Exceptions\Api\ApiErrorExcepiton;
