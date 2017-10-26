@@ -26,18 +26,6 @@ class ApplicationLanguageTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_implements_cacheable_interface()
-    {
-        $this->assertTrue($this->applicationLanguage instanceof Cacheable);
-    }
-
-    /** @test */
-    public function it_can_provide_cache_key()
-    {
-        $this->assertEquals('standard.a.c', $this->applicationLanguage->getCacheKey());
-    }
-
-    /** @test */
     public function application_type_cannot_be_unknown()
     {
         $this->expectException(InvalidApplicationTypeException::class);

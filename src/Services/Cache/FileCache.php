@@ -2,12 +2,9 @@
 
 namespace Language\Services\Cache;
 
-use Language\Config;
 use Language\Contracts\CacheDriver;
 use Language\Exceptions\CacheCreationException;
-use Language\Exceptions\InvalidApplicationTypeException;
-use Language\Model\ApplicationLanguage;
-use Language\Model\ApplicationType;
+use Language\Exceptions\InvalidDirectoryException;
 use Psr\Log\LoggerInterface;
 
 class FileCache implements CacheDriver
@@ -17,18 +14,16 @@ class FileCache implements CacheDriver
     private $filename;
     private $content;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, $config = [])
     {
         $this->logger = $logger;
+        $this->configure($config);
     }
 
-    public function set(ApplicationLanguage $language)
+    public function set($content)
     {
-        $this->content = $language->getCacheContent();
-
-        $this->setPathVariables($language)
-            ->setFolder()
-            ->saveContentToFile();
+        $this->content = $content;
+        $this->setFolder()->saveContentToFile();
 
         return true;
     }
@@ -36,8 +31,8 @@ class FileCache implements CacheDriver
     protected function setFolder()
     {
         if (!is_dir($this->folder)) {
-            mkdir($this->folder, 0777, true);
             $this->logger->info('Creating folder', ['folder' => $this->folder]);
+            $this->makeDirectory($this->folder);
         }
 
         return $this;
@@ -55,29 +50,22 @@ class FileCache implements CacheDriver
         return $this;
     }
 
-    protected function setPathVariables(ApplicationLanguage $language)
+    protected function makeDirectory($dir)
     {
-        switch ($language->type) {
-            case ApplicationType::APPLET:
-                $this->folder = $this->getCacheFolder() . 'flash/';
-                $this->filename = 'lang_' . $language->language . '.xml';
-
-                return $this;
-                break;
-            case ApplicationType::STANDARD:
-                $this->folder = $this->getCacheFolder() . $language->application . '/';
-                $this->filename = $language->language . '.php';
-
-                return $this;
-                break;
-            default:
-                $this->logger->error('Unexpected application type: ' . $language->type);
-                throw new InvalidApplicationTypeException('Unexpected application type: ' . $language->type);
+        if (empty($dir)) {
+            throw new InvalidDirectoryException('Cannot create empty directory');
+        }
+        if (!mkdir($this->folder, 0777, true)) {
+            $this->logger->info('Cannot create folder', ['folder' => $this->folder]);
+            throw new CacheCreationException('Cannot create directory');
         }
     }
 
-    protected function getCacheFolder()
+    public function configure($config = [])
     {
-        return Config::get('system.paths.root') . '/cache/';
+        $this->folder = isset($config['folder']) ? $config['folder'] : '';
+        $this->filename = isset($config['filename']) ? $config['filename'] : '';
+
+        return $this;
     }
 }

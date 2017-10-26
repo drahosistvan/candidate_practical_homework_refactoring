@@ -2,11 +2,9 @@
 
 namespace Language\Model;
 
-use Language\Contracts\Cacheable;
-use Language\Contracts\CacheDriver;
 use Language\Exceptions\InvalidContentException;
 
-class ApplicationLanguage implements Cacheable
+class ApplicationLanguage
 {
     private $content;
     public $application;
@@ -22,19 +20,9 @@ class ApplicationLanguage implements Cacheable
         $this->setContent($content);
     }
 
-    public function getCacheKey()
-    {
-        return $this->type . '.' . $this->application . '.' . $this->language;
-    }
-
-    public function getCacheContent()
+    public function getContent()
     {
         return $this->content;
-    }
-
-    public function cache(CacheDriver $cacheDriver)
-    {
-        $cacheDriver->set($this);
     }
 
     public function setContent($content)

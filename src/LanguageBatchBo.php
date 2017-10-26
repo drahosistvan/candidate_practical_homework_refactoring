@@ -5,6 +5,8 @@ namespace Language;
 use Language\Contracts\CacheDriver;
 use Language\Services\Cache\FileCache;
 use Language\Services\Data\ApplicationLanguageCollection;
+use Language\Model\ApplicationLanguage;
+use Language\Model\ApplicationType;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -28,17 +30,45 @@ class LanguageBatchBo
     public function generateLanguageFiles()
     {
         $this->applicationLanguageCollection->getApplicationLanguages()->each(function($applicationLanguage){
-            $this->cacheDriver->set($applicationLanguage);
+            $this->cacheDriver->configure($this->getCacheConfig($applicationLanguage))->set($applicationLanguage->getContent());
         });
     }
 
     public function generateAppletLanguageXmlFiles()
     {
-        $this->applicationLanguageCollection->getAppletLanguages()->each->cache($this->cacheDriver);
+        $this->applicationLanguageCollection->getAppletLanguages()->each(function($applicationLanguage){
+            $this->cacheDriver->configure($this->getCacheConfig($applicationLanguage))->set($applicationLanguage->getContent());
+        });
     }
 
     private function setupDefaultLogger()
     {
         return (new Logger('languageBatchBo'))->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+    }
+
+    protected function getCacheConfig(ApplicationLanguage $language)
+    {
+        switch ($language->type) {
+            case ApplicationType::APPLET:
+                return [
+                    'folder' => $this->getCacheFolder().'flash/',
+                    'filename' => 'lang_' . $language->language . '.xml',
+                ];
+                break;
+            case ApplicationType::STANDARD:
+                return [
+                    'folder' => $this->getCacheFolder().$language->application . '/',
+                    'filename' => $language->language . '.php',
+                ];
+                break;
+            default:
+                $this->logger->error('Unexpected application type: ' . $language->type);
+                throw new InvalidApplicationTypeException('Unexpected application type: ' . $language->type);
+        }
+    }
+
+    protected function getCacheFolder()
+    {
+        return Config::get('system.paths.root') . '/cache/';
     }
 }
